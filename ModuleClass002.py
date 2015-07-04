@@ -6,8 +6,6 @@
 #######################
 
 import Rhino.Geometry as rg
-import rhinoscriptsyntax as rs
-import Grasshopper as g
 import copy
 
 #######################
@@ -31,7 +29,7 @@ class modClass(object):
     
     """
     nextID = 0
-    def __init__(self, crvBase, width, height, nCuts, type, turn, coreN):
+    def __init__(self, crvBase, width, height, nCuts, modType, turn, coreN):
         
         """Initializing instances variables
             
@@ -40,15 +38,15 @@ class modClass(object):
         self.width = width
         self.height = height
         self.nCuts = nCuts
-        self.type = type
+        self.type = modType
         self.turn = turn
         self.coreN = coreN
         
         #To be filled later with the information provided by the model.
         self.corePartner = None
         
-        #Creates an unique ID forevery module in the current session.
-        #Intorduction to computation and programing with Python. p97 
+        #Creates an unique ID for every module in the current session.
+        #Introduction to computation and programming with Python. p97 
         self.ID = modClass.nextID
         modClass.nextID += 1
         
@@ -75,8 +73,8 @@ class modClass(object):
         #plane = planCrv.TryGetPlane()[0]
         #print plane.ZAxis[2]
         
-       
-        if plane.ZAxis[2] != 1:
+        if plane.ZAxis.IsParallelTo(rg.Vector3d.ZAxis) != 1:
+        #if plane.ZAxis[2] != 1:
             #planCrv.Reverse()
             self.height *= -1
         """        
