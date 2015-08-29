@@ -45,6 +45,9 @@ class modClass(object):
         #To be filled later with the information provided by the model.
         self.corePartner = None
         
+        #To use in structure model generation
+        self.planCentroid = None
+        
         #Creates an unique ID for every module in the current session.
         #Introduction to computation and programming with Python. p97 
         self.ID = modClass.nextID
@@ -67,6 +70,9 @@ class modClass(object):
         l2 = rg.Line(c.EndPoint, offCrv.EndPoint)
         
         planCrv = rg.Curve.JoinCurves((c.ToNurbsCurve(),l1.ToNurbsCurve(),l2.ToNurbsCurve(),offCrv.ToNurbsCurve()))[0]
+        areaMass = rg.AreaMassProperties.Compute(planCrv)
+        
+        ptc = areaMass.Centroid
         
         #Making curve direction uniform
         plane = planCrv.TryGetPlane()[1]
@@ -88,6 +94,13 @@ class modClass(object):
         vol = rg.Brep.CreateFromSurface(vol)
         vol = vol.CapPlanarHoles(0.01)
         """
+        # Implementing structure displacement.
+        # Needs to add the variable into the class creation.
+        structureMove = rg.Transform.Translation(0, 0, 0)
+        vol.Transform(structureMove)
+        ptc.Transform(structureMove)
+        
+        self.planCentroid = ptc
         
         return vol
         
